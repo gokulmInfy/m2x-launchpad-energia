@@ -19,9 +19,12 @@ Please consult the [M2X glossary](https://m2x.att.com/developer/documentation/gl
 How to Install the library
 ==========================
 
-This library depends on [jsonlite](https://github.com/amamchur/jsonlite), the installation steps are as follows:
+This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the installation steps are as follows:
 
-1. Clone the [jsonlite](https://github.com/amamchur/jsonlite) repository.
+1. Clone the [jsonlite](https://github.com/citrusbyte/jsonlite) repository.
+
+   **NOTE**: Since we are now using the old v1.1.2 API(we will migrate to the new API soon), please use the fork version of jsonlite listed above instead of the original one.
+
 2. Open the Arduino IDE, click `Sketch->Import Library...->Add Library...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Arduino this way.
 
    **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
