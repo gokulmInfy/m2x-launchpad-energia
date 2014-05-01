@@ -1,6 +1,6 @@
+#include "SPI.h"
+#include "WiFi.h"
 #include <jsonlite.h>
-#include <SPI.h>
-#include <WiFi.h>
 
 #include "M2XStreamClient.h"
 
@@ -37,24 +37,26 @@ void on_location_found(const char* name,
   Serial.println(timestamp);
 }
 
-void setup() {
-  Serial.begin(9600);
 
-  // Set communication pins for CC3000
+void setup() {
+  Serial.begin(115200);
+
+  // Setup pins of CC3000 BoosterPack
   WiFi.setCSpin(18);  // 18: P2_2 @ F5529, PE_0 @ LM4F/TM4C
   WiFi.setENpin(2);   //  2: P6_5 @ F5529, PB_5 @ LM4F/TM4C
   WiFi.setIRQpin(19); // 19: P2_0 @ F5529, PB_2 @ LM4F/TM4C
 
-  while ( status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
+  delay(10);
+  // Connect to an AP with WPA/WPA2 security
+  Serial.println("Connecting to WiFi....");
+  WiFi.begin(ssid, pass); // Use this if your wifi network requires a password
+  // WiFi.begin(ssid);    // Use this if your wifi network is unprotected.
 
-    // wait 10 seconds for connection:
-    delay(10000);
-  }
-  Serial.println("Connected to wifi");
+  Serial.println("Connect success!");
+  Serial.println("Waiting for DHCP address");
+  // Wait for DHCP address
+  delay(5000);
+  // Print WiFi status
   printWifiStatus();
 }
 

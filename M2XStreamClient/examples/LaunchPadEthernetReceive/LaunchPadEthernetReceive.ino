@@ -27,7 +27,7 @@ void on_data_point_found(const char* at, const char* value, int index, void* con
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   Serial.print("Attempting to connect to Ethernet");
   // start the Ethernet connection:

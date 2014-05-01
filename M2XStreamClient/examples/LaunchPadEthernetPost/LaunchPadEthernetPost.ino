@@ -6,20 +6,21 @@
 
 // Enter a MAC address for your controller below.
 // Newer Ethernet shields have a MAC address printed on a sticker on the shield
-byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
+byte mac[] = { 0x00, 0x1A, 0xB6, 0x02, 0xAF, 0x74 };
 // Set the static IP address to use if the DHCP fails to assign
-IPAddress ip(192,168,1,17);
+IPAddress ip(192,168,0,102);
 
 char feedId[] = "<feed id>"; // Feed you want to post to
 char streamName[] = "<stream name>"; // Stream you want to post to
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
-const int temperaturePin = 0;
+const int temperaturePin = A0;
+
 EthernetClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
 
   Serial.print("Attempting to connect to Ethernet");
   // start the Ethernet connection:
@@ -80,5 +81,5 @@ void printEthernetStatus() {
 
 float getVoltage(int pin)
 {
-  return (analogRead(pin) * 0.004882814);
+  return (analogRead(pin) * 0.004882814* 0.5); // normalize the voltage from LM35
 }

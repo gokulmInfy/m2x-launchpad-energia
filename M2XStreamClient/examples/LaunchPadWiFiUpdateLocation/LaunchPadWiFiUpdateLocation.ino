@@ -1,6 +1,6 @@
+#include "SPI.h"
+#include "WiFi.h"
 #include <jsonlite.h>
-#include <SPI.h>
-#include <WiFi.h>
 
 #include "M2XStreamClient.h"
 
@@ -22,27 +22,41 @@ WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 
 void setup() {
-  Serial.begin(9600);
+   Serial.begin(115200);
 
-  // Set communication pins for CC3000
+  // Setup pins of CC3000 BoosterPack
   WiFi.setCSpin(18);  // 18: P2_2 @ F5529, PE_0 @ LM4F/TM4C
   WiFi.setENpin(2);   //  2: P6_5 @ F5529, PB_5 @ LM4F/TM4C
   WiFi.setIRQpin(19); // 19: P2_0 @ F5529, PB_2 @ LM4F/TM4C
 
-  while ( status != WL_CONNECTED) {
-    Serial.print("Attempting to connect to SSID: ");
-    Serial.println(ssid);
-    // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
-    status = WiFi.begin(ssid, pass);
+  delay(10);
+  // Connect to an AP with WPA/WPA2 security
+  Serial.println("Connecting to WiFi....");
+  WiFi.begin(ssid, pass); // Use this if your wifi network requires a password
+  // WiFi.begin(ssid);    // Use this if your wifi network is unprotected.
 
-    // wait 10 seconds for connection:
-    delay(10000);
-  }
-  Serial.println("Connected to wifi");
+  Serial.println("Connect success!");
+  Serial.println("Waiting for DHCP address");
+  // Wait for DHCP address
+  delay(5000);
+  // Print WiFi status
   printWifiStatus();
 }
 
 void loop() {
+  // generate some random locations.  Replace this with your code for reading values from a GPS
+  float offset1 = random(-100, 100);
+  float offset2 = random(-100, 100);
+  double latitude = -37.97884 + (offset1/1000);
+  double longitude = -57.54787 + (offset2/1000); // You can also read those values from a GPS
+  
+  Serial.print("Latitude: ");
+  Serial.print(latitude);
+  Serial.print("  Longitude: ");
+  Serial.print(longitude);
+  Serial.print("  Elevation: ");
+  Serial.println(elevation);
+  
   int response = m2xClient.updateLocation(feedId, name, latitude, longitude,
                                           elevation);
   Serial.print("M2x client response code: ");
@@ -50,7 +64,8 @@ void loop() {
 
   if (response == -1) while(1) ;
 
-  delay(5000);
+  delay(30000);
+
 }
 
 void printWifiStatus() {
