@@ -1,9 +1,9 @@
-Arduino M2X API Client
+LaunchPad Energia M2X API Client
 =====================
 
-The Arduino library is used to send/receive data to/from [AT&amp;T's M2X service](https://m2x.att.com/) from [Arduino](http://www.arduino.cc/) based devices.
+The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X service](https://m2x.att.com/) from [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
 
-**NOTE**: Unless stated otherwise, the following instructions are specific to [Arduino Uno](http://arduino.cc/en/Main/arduinoBoardUno) board. If you are using other boards, the exact steps may vary.
+**NOTE**: Unless stated otherwise, the following instructions are specific to [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards. If you are using other boards, the exact steps may vary.
 
 
 Getting Started
@@ -12,12 +12,14 @@ Getting Started
 2. Obtain your _Master Key_ from the Master Keys tab of your [Account Settings](https://m2x.att.com/account) screen.
 3. Create your first [Data Source Blueprint](https://m2x.att.com/blueprints) and copy its _Feed ID_.
 4. Review the [M2X API Documentation](https://m2x.att.com/developer/documentation/overview).
-5. Obtain an Arduino with built in wifi or ethernet, or a separate wifi or ethernet shield and [set it up](http://arduino.cc/en/Guide/HomePage). These docs were written for an [__Arduino Uno__](http://arduino.cc/en/Main/arduinoBoardUno) with a wifi or ethernet shield but the instructions can be adapted for other Arduino models.
+5. Obtain a TI Tiva C Series Launchpad, either with built in ethernet or with a wifi BoosterPack, and [set it up](http://www.ti.com/lit/ug/spmu296/spmu296.pdf).  These docs were written for [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost), and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards.
 
 Please consult the [M2X glossary](https://m2x.att.com/developer/documentation/glossary) if you have questions about any M2X specific terms.
 
 How to Install the library
 ==========================
+
+This library is designed for use with the [Energia IDE](http://energia.nu).  Directions for installing and configuring the IDE can be found [here](http://energia.nu/Guide_index.html).
 
 This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the installation steps are as follows:
 
@@ -25,7 +27,7 @@ This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the 
 
    **NOTE**: Since we are now using the old v1.1.2 API(we will migrate to the new API soon), please use the fork version of jsonlite listed above instead of the original one.
 
-2. Open the Arduino IDE, click `Sketch->Import Library...->Add Library...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Arduino this way.
+2. Open the Arduino IDE, click `Sketch->Add File...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Arduino this way.
 
    **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
    * `jsonlite`: the repo folder
@@ -266,13 +268,13 @@ Examples
 
 We provide a series of examples that will help you get an idea of how to use the `M2XStreamClient` library to perform all kinds of tasks.
 
-Note that the examples may apply to certain types of boards. For example, the ones with `Uno` in the name apply to `Arduino Uno` boards, while the ones with `Yun` apply to `Arduino Yun` boards.
+Note that the examples may apply to certain types of boards. For example, the ones with `Wifi` in the name apply to `Tiva C Series` boards with a `CC3300 BoosterPack`, while the ones with `Ethernet` apply to `Tiva C Series` boards with built-in ethernet.
 
-Note that the examples contain fictionary variables, and that they need to be configured as per the instructions above before running on your Arduino board. Each of the examples here also needs either a Wifi Shield or an Ethernet Shield hooked up to your device.
+Note that the examples contain fictionary variables, and that they need to be configured as per the instructions above before running on your LaunchPad board. Each of the examples here also needs either a Wifi Shield or an Ethernet Shield hooked up to your device.
 
-In the `UnoPost`, `EthernetUnoPost` and `YunPost`, a temperature sensor, a breadboard and 5 wires are also needed to get temperature data, you need to wire the board like [this](http://cl.ly/image/3M0P3T1A0G0l) before running the code.
+In the `LaunchPadWifiPost` and `LaunchPadEthernetPost`, a temperature sensor, a breadboard and 5 wires are also needed to get temperature data, you need to wire the board like [this](http://cl.ly/image/3M0P3T1A0G0l) before running the code.
 
-After you have configured your variables and the board, plug the Arduino board into your computer via a Micro-USB cable, click `Verify` in the Arduino IDE, then click `Upload`, and the code should be uploaded to the board. You can check all the outputs in the `Serial Monitor` of the Arduino IDE.
+After you have configured your variables and the board, plug the LaunchPad board into your computer via a Micro-USB cable, click `Verify` in the Energia IDE, then click `Upload`, and the code should be uploaded to the board. You can check all the outputs in the `Serial Monitor` of the Energia IDE.
 
 UnoPost
 -------
