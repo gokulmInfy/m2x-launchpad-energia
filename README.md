@@ -1,7 +1,7 @@
 LaunchPad Energia M2X API Client
 =====================
 
-The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X service](https://m2x.att.com/) from [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
+The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X Data Service](https://m2x.att.com/) from [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
 
 **NOTE**: Unless stated otherwise, the following instructions are specific to [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards. If you are using other boards, the exact steps may vary.
 
@@ -27,7 +27,7 @@ This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the 
 
    **NOTE**: Since we are now using the old v1.1.2 API(we will migrate to the new API soon), please use the fork version of jsonlite listed above instead of the original one.
 
-2. Open the Arduino IDE, click `Sketch->Add File...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Arduino this way.
+2. Open the Energia IDE, click `Sketch->Add File...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Energia this way.
 
    **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
    * `jsonlite`: the repo folder
@@ -45,24 +45,19 @@ Hardware Setup
 Board Setup
 -----------
 
-The Arduino website has a very good [tutorial](http://arduino.cc/en/Guide/HomePage) on setting up the Arduino board. It contains detailed instructions on how to install the Arduino IDE, sets up your board for initial testing. Feel free to proceed to the [Arduino site](http://arduino.cc/en/Guide/HomePage) to get a basic idea on Arduino.
+The Energia website has a very good [tutorial](http://energia.nu/Guide_index.html) on setting up the LaunchPad board. It contains detailed instructions on how to install the Energia IDE, and sets up your board for initial testing. Feel free to proceed to the [LaunchPad site](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) to get a basic idea on LaunchPad.
 
 Wifi/Ethernet Shield Setup
 --------------------------
 
-If you are using an [Arduino Yun](http://arduino.cc/en/Main/ArduinoBoardYun) board instead of an [Arduino Uno](http://arduino.cc/en/Main/ArduinoBoardUno) board, you can skip this section since the Yun board already has Wifi adapter on board.
+If you are using a [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) board instead of a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) board, you can skip this section since the EK-TM4C1294XL board already has Ethernet on board.
 
-To send data to the AT&amp;T M2X service, or receive data from the AT&amp;T M2X service, your Arduino board needs a connection to the Internet. Hence an Arduino [Wifi Shield](http://arduino.cc/en/Main/ArduinoWiFiShield) or [Ethernet Shield](http://arduino.cc/en/Main/ArduinoEthernetShield) is needed to give your board the power to connect to the Internet. To install the shield, hook the shield on your Arduino board — you can use the pins on the shield the same way as the real pins on the Arduino boards.
+To send data to the AT&amp;T M2X Data Service, or receive data from the AT&amp;T M2X Data Service, your LaunchPad board needs a connection to the Internet. Hence a LaunchPad [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost) is needed to give your board the power to connect to the Internet. To install the shield, hook the shield on your LaunchPad board — you can use the pins on the shield the same way as the real pins on the LaunchPad boards.
 
 Sensor Setup
 ------------
 
-Different sensors can be hooked up to an Arduino board to provide different properties including temperatures, humidity, etc. You can use a breadboard as well as wires to connect different sensors to your Arduino. For detailed tutorial on connecting different sensors, please refer to the Arduino [Examples page](http://arduino.cc/en/Tutorial/HomePage).
-
-3G Shield Setup
-------------
-
-If you are using a 3G GSM/GPRS shield with your Arduino, the [M2X Arduino SIMCOM module](https://github.com/attm2x/m2x-arduino-simcom) can be used to connect your device to the AT&T cellular data network.
+Different sensors can be hooked up to an LaunchPad board to provide different properties including temperatures, humidity, etc. You can use a breadboard as well as wires to connect different sensors to your LaunchPad. For detailed tutorials on connecting different sensors, please refer to the LaunchPad [Wiki page](http://processors.wiki.ti.com/index.php/Tiva_C_Series_TM4C123G_LaunchPad).
 
 
 Variables used in Examples
@@ -127,7 +122,7 @@ char streamName[] = "<stream name>";
 Using the M2XStreamClient library
 =========================
 
-The M2X Arduino library can be used with both Wifi connection and Ethernet connection. For a Wifi connection, use the following code:
+The M2X LaunchPad library can be used with both Wifi connection and Ethernet connection. For a Wifi connection, use the following code:
 
 ```
 WiFiClient client;
@@ -141,12 +136,6 @@ EthernetClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 ```
 
-If you are using an [Arduino Yun](http://arduino.cc/en/Main/ArduinoBoardYun) board specifically, you should use the following code:
-
-```
-YunClient client;
-M2XStreamClient m2xClient(&client, m2xKey);
-```
 
 In the M2XStreamClient, 4 types of API functions are provided here:
 
@@ -206,7 +195,6 @@ void (*stream_value_read_callback)(const char* at,
                                    const char* value,
                                    int index,
                                    void* context);
-
 ```
 
 The implementation of the callback function is left for the user to fill in, you can read the value of the point in the `value` argument, and the timestamp of the point in the `at` argument. We even pass the index of this this data point in the whole stream as well as a user-specified context variable to this function, so as you can perform different tasks on this.
@@ -250,7 +238,6 @@ void (*location_read_callback)(const char* name,
                                const char* timestamp,
                                int index,
                                void* context);
-
 ```
 
 For memory space consideration, now we only provide double-precision when reading locations. An index of the location points is also provided here together with a user-specified context.
@@ -260,7 +247,6 @@ The API is also slightly different, in that the stream name is not needed here:
 ```
 int readLocation(const char* feedId, location_read_callback callback,
                  void* context);
-
 ```
 
 Examples
@@ -276,45 +262,42 @@ In the `LaunchPadWifiPost` and `LaunchPadEthernetPost`, a temperature sensor, a 
 
 After you have configured your variables and the board, plug the LaunchPad board into your computer via a Micro-USB cable, click `Verify` in the Energia IDE, then click `Upload`, and the code should be uploaded to the board. You can check all the outputs in the `Serial Monitor` of the Energia IDE.
 
-UnoPost
--------
+LaunchPadWifiPost
+-----------------
 
-This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a feed ID and a stream name. The Arduino board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using an [Arduino Uno](http://arduino.cc/en/Main/arduinoBoardUno) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
+This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a feed ID and a stream name. The LaunchPad board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
 
-UnoPostMultiple
+LaunchPadWifiPostMultiple
 ---------------
 
 This example shows how to post multiple values to multiple streams in one API call.
 
-UnoFetchValues
+LaunchPadWifiFetchValues
 --------------
 
 This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the Arduino `Serial Monitor`.
 
-EthernetUnoPost
----------------
-
-This one is similar to the `UnoPost`, except that EthernetClient is used instead of WifiClient. If you are using an Ethernet Shield instead of a Wifi Shield, you can use this example.
-
-EthernetUnoReceive
-------------------
-
-This one is similar to the `UnoReceive`, except that EthernetClient is used instead of WifiClient.
-
-UnoUpdateLocation
+LaunchPadWifiUpdateLocation
 -----------------
 
 This one sends location data to M2X server. Idealy a GPS device should be used here to read the cordinates, but for simplicity, we just use pre-set values here to show how to use the API.
 
-UnoReadLocation
+LaunchPadWifiReadLocation
 ---------------
 
 This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Arduino IDE.
 
-YunPost
--------
+LaunchPadEthernetPost
+---------------
 
-This example works like `YunPost`, except that it works on an [Arduino Yun](http://arduino.cc/en/Main/ArduinoBoardYun) board instead of an [Arduino Uno](http://arduino.cc/en/Main/arduinoBoardUno) board.
+This one is similar to the `LaunchPadWifiPost`, except that EthernetClient is used instead of WifiClient. If you are using a [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) board, you can use this example.
+
+LaunchPadEthernetReceive
+------------------
+
+This one is similar to the `LaunchPadWifiReceive`, except that EthernetClient is used instead of WifiClient.
+
+
 
 LICENSE
 =======
