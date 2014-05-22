@@ -32,7 +32,7 @@ This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the 
    **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
    * `jsonlite`: the repo folder
    * `jsonlite/jsonlite`: the un-flattened jsonlite source folder
-   * `jsonlite/amalgamated/jsonlite`: the flattened jsonlite source for arduino
+   * `jsonlite/amalgamated/jsonlite`: the flattened jsonlite source
 
    The last one here should be the one to use, the first 2 won't work!
 3. Use the instructions outlined in Step 2 above to import the `M2XStreamClient` library in the current folder.
@@ -188,7 +188,7 @@ Please refer to the comments in the source code on how to use this function, bas
 Fetch stream value
 ------------------
 
-Since Arduino board contains very limited memory, we cannot put the whole returned string in memory, parse it into JSON representations and read what we want. Instead, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
+Since your board contains limited memory, we cannot put the whole returned string in memory, parse it into JSON representations and read what we want. Instead, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
 
 ```
 void (*stream_value_read_callback)(const char* at,
@@ -223,7 +223,7 @@ int updateLocation(const char* feedId, const char* name,
 
 Different from stream values, locations are attached to feeds rather than streams.
 
-The reasons we are providing templated function is due to floating point value precision: on most Arduino boards, `double` is the same as `float`, i.e., 32-bit (4-byte) single precision floating number. That means only 7 digits in the number is reliable. When we are using `double` here to represent latitude/longitude, it means only 5 digits after the floating point is accurate, which means we can represent as accurate to ~1.1132m distance using `double` here. If you want to represent cordinates that are more specific, you need to use strings here.
+The reasons we are providing templated function is due to floating point value precision: on most boards, `double` is the same as `float`, i.e., 32-bit (4-byte) single precision floating number. That means only 7 digits in the number is reliable. When we are using `double` here to represent latitude/longitude, it means only 5 digits after the floating point is accurate, which means we can represent as accurate to ~1.1132m distance using `double` here. If you want to represent cordinates that are more specific, you need to use strings here.
 
 Read Datasource Location
 ------------------------
@@ -275,7 +275,7 @@ This example shows how to post multiple values to multiple streams in one API ca
 LaunchPadWifiFetchValues
 --------------
 
-This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the Arduino `Serial Monitor`.
+This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the `Serial Monitor`.
 
 LaunchPadWifiUpdateLocation
 -----------------
@@ -285,7 +285,7 @@ This one sends location data to M2X server. Idealy a GPS device should be used h
 LaunchPadWifiReadLocation
 ---------------
 
-This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Arduino IDE.
+This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` in your IDE.
 
 LaunchPadEthernetPost
 ---------------
