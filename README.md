@@ -191,7 +191,7 @@ Please refer to the comments in the source code on how to use this function, bas
 Fetch stream value
 ------------------
 
-To preserver memory when fetching and parsing JSON, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
+To preserve memory when fetching and parsing JSON, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
 
 ```
 typedef void (*stream_value_read_callback)(const char* at,
