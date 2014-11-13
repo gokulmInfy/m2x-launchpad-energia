@@ -7,7 +7,7 @@
 
 #ifdef ENERGIA_PLATFORM
 #include "Energia.h"
-#define USER_AGENT "User-Agent: M2X Arduino Client/0.1"
+#define USER_AGENT "User-Agent: M2X Energia Client/0.1"
 #endif
 
 #ifdef ARDUINO_PLATFORM
@@ -52,10 +52,19 @@ static const int E_NOTREACHABLE = -3;
 static const int E_INVALID = -4;
 static const int E_JSON_INVALID = -5;
 
+/*
+* +type+ indicates the value type: 1 for string, 2 for number
+* NOTE that the value type here only contains a hint on how
+* you can use the value. Even though 2 is returned, the value
+* is still stored in (const char *), and atoi/atof is needed to
+* get the actual value
+*/
+	
 typedef void (*stream_value_read_callback)(const char* at,
                                            const char* value,
                                            int index,
-                                           void* context);
+                                           void* context,
+                                           int type);
 
 typedef void (*location_read_callback)(const char* name,
                                        double latitude,
@@ -76,9 +85,9 @@ public:
                   const char* host = kDefaultM2XHost,
                   int port = kDefaultM2XPort);
 
-  // Post data stream value, returns the HTTP status code
+  // Push data stream value using PUT request, returns the HTTP status code
   template <class T>
-  int post(const char* feedId, const char* streamName, T value);
+  int put(const char* feedId, const char* streamName, T value);
 
   // Post multiple values to M2X all at once.
   // +feedId+ - id of the feed to post values
@@ -144,6 +153,23 @@ public:
   // response is only parsed when the HTTP status code is 200
   int readLocation(const char* feedId, location_read_callback callback,
                    void* context);
+
+  // Delete values from a data stream
+  // You will need to provide from and end date/time strings in the ISO8601 
+  // format "yyyy-mm-ddTHH:MM:SS.SSSZ" where
+  //   yyyy: the year
+  //   mm: the month
+  //   dd: the day
+  //   HH: the hour (24 hour format)
+  //   MM: the minute
+  //   SS.SSS: the seconds (to the millisecond)
+  // NOTE: the time is given in Zulu (GMT)
+  // M2X will delete all values within the from to end date/time range.
+  // The status code is 204 on success and 400 on a bad request (e.g. the
+  // timestamp is not in ISO8601 format or the from timestamp is not less than
+  // or equal to the end timestamp.
+  int deleteValues(const char* feedId, const char* streamName, 
+                   const char* from, const char* end);
 private:
   Client* _client;
   const char* _key;
@@ -153,9 +179,13 @@ private:
   NullPrint _null_print;
 
   // Writes the HTTP header part for updating a stream value
-  void writePostHeader(const char* feedId,
-                       const char* streamName,
-                       int contentLength);
+  void writePutHeader(const char* feedId,
+                      const char* streamName,
+                      int contentLength);
+  // Writes the HTTP header part for deleting stream values
+  void writeDeleteHeader(const char* feedId,
+                         const char* streamName,
+                         int contentLength);
   // Writes HTTP header lines including M2X API Key, host, content
   // type and content length(if the body exists)
   void writeHttpHeader(int contentLength);

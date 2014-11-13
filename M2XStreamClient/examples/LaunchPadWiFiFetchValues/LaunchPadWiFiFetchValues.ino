@@ -10,16 +10,18 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to post to
-char streamName[] = "<stream name>"; // Stream you want to post to
+char feedId[] = "<feed id>"; // Feed you want to receive values
+char streamName[] = "<stream name>"; // Stream you want to receive values
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 
-void on_data_point_found(const char* at, const char* value, int index, void* context) {
+void on_data_point_found(const char* at, const char* value, int index, void* context, int type) {
   Serial.print("Found a data point, index:");
   Serial.println(index);
+  Serial.print("Type:");
+  Serial.println(type);
   Serial.print("At:");
   Serial.println(at);
   Serial.print("Value:");
@@ -50,7 +52,7 @@ void setup() {
 
 void loop() {
   int response = m2xClient.fetchValues(feedId, streamName, on_data_point_found, NULL);
-  Serial.print("M2x client response code: ");
+  Serial.print("M2X client response code: ");
   Serial.println(response);
 
   if (response == -1) while(1) ;

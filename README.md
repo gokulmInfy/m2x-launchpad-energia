@@ -5,6 +5,9 @@ The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M
 
 **NOTE**: Unless stated otherwise, the following instructions are specific to [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards. If you are using other boards, the exact steps may vary.
 
+The LaunchPad Energia library is based on the [attm2x/m2x-arduino](https://github.com/attm2x/m2x-arduino) library.
+
+**NOTE**: We've [changed](https://github.com/attm2x/m2x-arduino/commit/ca3a5484b371f011a30a523465b9aa517d61db25) one API to avoid ambiguity, if you are using the older version of client library, you might need to fix your code.
 
 Getting Started
 ==========================
@@ -188,16 +191,19 @@ Please refer to the comments in the source code on how to use this function, bas
 Fetch stream value
 ------------------
 
-Since your board contains limited memory, we cannot put the whole returned string in memory, parse it into JSON representations and read what we want. Instead, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
+To preserve memory when fetching and parsing JSON, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
 
 ```
-void (*stream_value_read_callback)(const char* at,
-                                   const char* value,
-                                   int index,
-                                   void* context);
+typedef void (*stream_value_read_callback)(const char* at,
+                                           const char* value,
+                                           int index,
+                                           void* context,
+                                           int type);
 ```
 
 The implementation of the callback function is left for the user to fill in, you can read the value of the point in the `value` argument, and the timestamp of the point in the `at` argument. We even pass the index of this this data point in the whole stream as well as a user-specified context variable to this function, so as you can perform different tasks on this.
+
+`type` indicates the type of value stored in `value`: 1 for string, 2 for number. However, keep in mind that `value` will always be a pointer to an array of char, even though `type` indicates the current value is a number. In this case, `atoi` or `atof` might be needed.
 
 To read the stream values, all you need to do is calling this function:
 
@@ -223,7 +229,7 @@ int updateLocation(const char* feedId, const char* name,
 
 Different from stream values, locations are attached to feeds rather than streams.
 
-The reasons we are providing templated function is due to floating point value precision: on most boards, `double` is the same as `float`, i.e., 32-bit (4-byte) single precision floating number. That means only 7 digits in the number is reliable. When we are using `double` here to represent latitude/longitude, it means only 5 digits after the floating point is accurate, which means we can represent as accurate to ~1.1132m distance using `double` here. If you want to represent cordinates that are more specific, you need to use strings here.
+The reasons we are providing templated function is due to floating point value precision: on most LaunchPad boards, `double` is the same as `float`, i.e., 32-bit (4-byte) single precision floating number. That means only 7 digits in the number is reliable. When we are using `double` here to represent latitude/longitude, it means only 5 digits after the floating point is accurate, which means we can represent as accurate to ~1.1132m distance using `double` here. If you want to represent cordinates that are more specific, you need to use strings here.
 
 Read Datasource Location
 ------------------------
@@ -248,6 +254,18 @@ The API is also slightly different, in that the stream name is not needed here:
 int readLocation(const char* feedId, location_read_callback callback,
                  void* context);
 ```
+
+Delete Values
+-------------
+
+You can use the following function to delete values within a stream by providing a `from` and `end` date/time:
+
+```
+int deleteValues(const char* feedId, const char* streamName, 
+                 const char* from, const char* end);
+```
+
+The timestamps `from` and `end` need to be in an ISO 8601 format: yyyy-mm-ddTHH:MM:SS.SSSZ. Note the Z for Zulu time.
 
 Examples
 ========
@@ -275,7 +293,7 @@ This example shows how to post multiple values to multiple streams in one API ca
 LaunchPadWifiFetchValues
 --------------
 
-This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the `Serial Monitor`.
+This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the Energia `Serial Monitor`.
 
 LaunchPadWifiUpdateLocation
 -----------------
@@ -285,7 +303,12 @@ This one sends location data to M2X server. Idealy a GPS device should be used h
 LaunchPadWifiReadLocation
 ---------------
 
-This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` in your IDE.
+This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
+
+LaunchPadWifiDelete
+---------
+
+This example shows how to delete values within a stream by providing a date/time range.
 
 LaunchPadEthernetPost
 ---------------
