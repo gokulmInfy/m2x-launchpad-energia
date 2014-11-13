@@ -10,8 +10,8 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to post to
-char streamName[] = "<stream name>"; // Stream you want to post to
+char feedId[] = "<feed id>"; // Feed you want to push to
+char streamName[] = "<stream name>"; // Stream you want to push to
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 
@@ -62,8 +62,8 @@ void loop() {
   Serial.print("  deg F: ");
   Serial.println(degreesF);
 
-  int response = m2xClient.post(feedId, streamName, degreesC);
-  Serial.print("M2x client response code: ");
+  int response = m2xClient.put(feedId, streamName, degreesC);
+  Serial.print("M2X client response code: ");
   Serial.println(response);
 
   if (response == -1)

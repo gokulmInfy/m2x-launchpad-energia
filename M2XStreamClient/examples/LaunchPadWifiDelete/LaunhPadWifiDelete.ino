@@ -10,19 +10,29 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to read
+char feedId[] = "<feed id>"; // Feed you want to receive values
+char streamName[] = "<stream name>"; // Stream you want to receive values
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
-char name[] = "<location name>"; // Name of current location of datasource
-double latitude = -37.97884;
-double longitude = -57.54787; // You can also read those values from a GPS
-double elevation = 15;
+char fromTime[] = "<from date/time>"; // yyyy-mm-ddTHH:MM:SS.SSSZ
+char endTime[] = "<end date/time>"; // yyyy-mm-ddTHH:MM:SS.SSSZ
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 
+void on_data_point_found(const char* at, const char* value, int index, void* context, int type) {
+  Serial.print("Found a data point, index:");
+  Serial.println(index);
+  Serial.print("Type:");
+  Serial.println(type);
+  Serial.print("At:");
+  Serial.println(at);
+  Serial.print("Value:");
+  Serial.println(value);
+}
+
 void setup() {
-   Serial.begin(115200);
+  Serial.begin(115200);
 
   // Setup pins of CC3000 BoosterPack
   WiFi.setCSpin(18);  // 18: P2_2 @ F5529, PE_0 @ LM4F/TM4C
@@ -41,31 +51,21 @@ void setup() {
   delay(5000);
   // Print WiFi status
   printWifiStatus();
+  
+  // Delete values
+  int response = m2xClient.deleteValues(feedId, 
+                                        streamName,
+                                        fromTime,
+                                        endTime);
+  Serial.print("M2x client response code: ");
+  Serial.println(response);
+  
 }
 
 void loop() {
-  // generate some random locations.  Replace this with your code for reading values from a GPS
-  float offset1 = random(-100, 100);
-  float offset2 = random(-100, 100);
-  double latitude = -37.97884 + (offset1/1000);
-  double longitude = -57.54787 + (offset2/1000); // You can also read those values from a GPS
-  
-  Serial.print("Latitude: ");
-  Serial.print(latitude);
-  Serial.print("  Longitude: ");
-  Serial.print(longitude);
-  Serial.print("  Elevation: ");
-  Serial.println(elevation);
-  
-  int response = m2xClient.updateLocation(feedId, name, latitude, longitude,
-                                          elevation);
-  Serial.print("M2x client response code: ");
-  Serial.println(response);
+  // Do nothing
 
-  if (response == -1) while(1) ;
-
-  delay(30000);
-
+  delay(5000);
 }
 
 void printWifiStatus() {
