@@ -152,7 +152,7 @@ public:
   // data points for memory reasons. The HTTP status code is returned,
   // response is only parsed when the HTTP status code is 200
   int readLocation(const char* feedId, location_read_callback callback,
-                   void* context)
+                   void* context);
 
   // Delete values from a data stream
   // You will need to provide from and end date/time strings in the ISO8601 
