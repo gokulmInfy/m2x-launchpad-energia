@@ -1,4 +1,5 @@
-LaunchPad Energia M2X API Client
+##LaunchPad Energia M2X API Client##
+###*(V1 API Only)*###
 =====================
 
 The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X Data Service](https://m2x.att.com/) from [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
