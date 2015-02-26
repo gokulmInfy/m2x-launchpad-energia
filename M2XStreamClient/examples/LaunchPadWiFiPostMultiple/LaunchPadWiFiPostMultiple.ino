@@ -10,7 +10,7 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to post to
+char deviceId[] = "<device id>"; // Device you want to post to
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 const int temperaturePin = A0;
@@ -65,7 +65,7 @@ void loop() {
   
   double values[] = { degreesF, degreesC, humidity };
   
-  int response = m2xClient.postMultiple(feedId, 2, streamNames,
+  int response = m2xClient.postMultiple(deviceId, 2, streamNames,
                                         counts, ats, values);
   Serial.print("M2X client response code: ");
   Serial.println(response);

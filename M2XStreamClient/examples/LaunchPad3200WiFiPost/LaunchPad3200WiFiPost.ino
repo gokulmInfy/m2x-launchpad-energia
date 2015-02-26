@@ -12,7 +12,7 @@ char pass[] = "<WPA password>";    // your network password (use for WPA, or use
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to push to
+char deviceId[] = "<device id>"; // Device you want to push to
 char streamName[] = "<stream name>"; // Stream you want to push to
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
@@ -80,7 +80,7 @@ void loop() {
   // If the maximum tilt is over 20 degrees, then send
   // data to stream
   if (maxTilt > 20) {
-    int response = m2xClient.post(feedId, streamName, maxTilt);
+    int response = m2xClient.updateStreamValue(deviceId, streamName, maxTilt);
     Serial.print("M2x client response code: ");
     Serial.println(response);
 

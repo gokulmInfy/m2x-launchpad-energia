@@ -1,5 +1,4 @@
 ##LaunchPad Energia M2X API Client##
-###*(V1 API Only)*###
 =====================
 
 The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X Data Service](https://m2x.att.com/) from [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
@@ -13,9 +12,9 @@ The LaunchPad Energia library is based on the [attm2x/m2x-arduino](https://githu
 Getting Started
 ==========================
 1. Signup for an [M2X Account](https://m2x.att.com/signup).
-2. Obtain your _Master Key_ from the Master Keys tab of your [Account Settings](https://m2x.att.com/account) screen.
-3. Create your first [Data Source Blueprint](https://m2x.att.com/blueprints) and copy its _Feed ID_.
-4. Review the [M2X API Documentation](https://m2x.att.com/developer/documentation/v1/overview).
+2. Obtain your _Master_ from the Master Keys tab of your [Account Settings](https://m2x.att.com/account) screen.
+3. Create your first [Device](https://m2x.att.com/devices) and copy its _Device ID_.
+4. Review the [M2X API Documentation](https://m2x.att.com/developer/documentation/v2/overview).
 5. Obtain a TI Tiva C Series Launchpad, either with built in ethernet or with a wifi BoosterPack, and [set it up](http://www.ti.com/lit/ug/spmu296/spmu296.pdf).  These docs were written for [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost), and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards.
 
 Please consult the [M2X glossary](https://m2x.att.com/developer/documentation/v1/glossary) if you have questions about any M2X specific terms.
@@ -97,7 +96,7 @@ M2X API Key
 
 Once you [register](https://m2x.att.com/signup) for an AT&amp;T M2X account, an API key is automatically generated for you. This key is called a _Primary Master Key_ and can be found in the _Master Keys_ tab of your [Account Settings](https://m2x.att.com/account). This key cannot be edited nor deleted, but it can be regenerated. It will give you full access to all APIs.
 
-However, you can also create a _Data Source API Key_ associated with a given Data Source(Feed), you can use the Data Source API key to access the streams belonging to that Data Source.
+However, you can also create a _Device API Key_ associated with a given Device, you can use the Device API key to access the streams belonging to that Data Source.
 
 You can customize this variable in the following line in the examples:
 
@@ -105,19 +104,19 @@ You can customize this variable in the following line in the examples:
 char m2xKey[] = "<M2X access key>";
 ```
 
-Feed ID
+Device ID
 -------
 
-A feed is associated with a data source, it is a set of data streams, such as streams of locations, temperatures, etc. The following line is needed to configure the feed used:
+A device is associated with a data source, it is a set of data streams, such as streams of locations, temperatures, etc. The following line is needed to configure the device used:
 
 ```
-char feedId[] = "<feed id>";
+char deviceId[] = "<device id>";
 ```
 
 Stream Name
 ------------
 
-A stream in a feed is a set of timed series data of a specific type(i,e. humidity, temperature), you can use the M2XStreamClient library to send stream values to M2X server, or receive stream values from M2X server. Use the following line to configure the stream if needed:
+A stream in a device is a set of timed series data of a specific type(i,e. humidity, temperature), you can use the M2XStreamClient library to send stream values to M2X server, or receive stream values from M2X server. Use the following line to configure the stream if needed:
 
 ```
 char streamName[] = "<stream name>";
@@ -141,12 +140,14 @@ M2XStreamClient m2xClient(&client, m2xKey);
 ```
 
 
-In the M2XStreamClient, 4 types of API functions are provided here:
+In the M2XStreamClient, following types of API functions are provided here:
 
-* `send`: Send stream value to M2X server
-* `receive`: Receive stream value from M2X server
-* `updateLocation`: Send location value of a feed to M2X server
-* `readLocation`: Receive location values of a feed from M2X server
+* `updateStreamValue`: Send stream value to M2X server
+* `postMultiple`: Send multiple stream values to M2X server
+* `listStreamValues`: Receive stream value from M2X server
+* `updateLocation`: Send location value of a device to M2X server
+* `readLocation`: Receive location values of a device from M2X server
+* `deleteValues`: Delete stream values on M2X server
 
 Returned values
 ---------------
@@ -166,11 +167,11 @@ static const int E_JSON_INVALID = -5;
 Post stream value
 -----------------
 
-The following functions can be used to post value to a stream, which belongs to a feed:
+The following functions can be used to post value to a stream, which belongs to a device:
 
 ```
 template <class T>
-int post(const char* feedId, const char* streamName, T value);
+int updateStreamValue(const char* deviceId, const char* streamName, T value);
 ```
 
 Here we use C++ templates to generate functions for different types of values, feel free to use values of `float`, `int`, `long` or even `const char*` types here.
@@ -182,15 +183,15 @@ M2X also supports posting multiple values to multiple streams in one call, use t
 
 ```
 template <class T>
-int postMultiple(const char* feedId, int streamNum,
+int postMultiple(const char* deviceId, int streamNum,
                  const char* names[], const int counts[],
                  const char* ats[], T values[]);
 ```
 
 Please refer to the comments in the source code on how to use this function, basically, you need to provide the list of streams you want to post to, and values for each stream.
 
-Fetch stream value
-------------------
+List stream value
+-----------------
 
 To preserve memory when fetching and parsing JSON, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
 
@@ -209,26 +210,25 @@ The implementation of the callback function is left for the user to fill in, you
 To read the stream values, all you need to do is calling this function:
 
 ```
-int fetchValues(const char* feedId, const char* streamName,
-                stream_value_read_callback callback, void* context,
-                const char* startTime = NULL, const char* endTime = NULL,
-                const char* limit = NULL);
+int listStreamValues(const char* deviceId, const char* streamName,
+                     stream_value_read_callback callback, void* context,
+                     const char* query = NULL);
 ```
 
-Besides the feed ID and stream name, only the callback function and a user context needs to be specified. Optional filtering parameters such as start time, end time and limits per call can also be used here.
+Besides the device ID and stream name, only the callback function and a user context needs to be specified. Optional filtering parameters such as start time, end time and limits per call can also be used here.
 
 Update Datasource Location
 --------------------------
 
-You can use the following function to update the location for a data source(feed):
+You can use the following function to update the location for a data source(device):
 
 ```
 template <class T>
-int updateLocation(const char* feedId, const char* name,
+int updateLocation(const char* deviceId, const char* name,
                    T latitude, T longitude, T elevation);
 ```
 
-Different from stream values, locations are attached to feeds rather than streams.
+Different from stream values, locations are attached to devices rather than streams.
 
 The reasons we are providing templated function is due to floating point value precision: on most LaunchPad boards, `double` is the same as `float`, i.e., 32-bit (4-byte) single precision floating number. That means only 7 digits in the number is reliable. When we are using `double` here to represent latitude/longitude, it means only 5 digits after the floating point is accurate, which means we can represent as accurate to ~1.1132m distance using `double` here. If you want to represent cordinates that are more specific, you need to use strings here.
 
@@ -252,7 +252,7 @@ For memory space consideration, now we only provide double-precision when readin
 The API is also slightly different, in that the stream name is not needed here:
 
 ```
-int readLocation(const char* feedId, location_read_callback callback,
+int readLocation(const char* deviceId, location_read_callback callback,
                  void* context);
 ```
 
@@ -262,7 +262,7 @@ Delete Values
 You can use the following function to delete values within a stream by providing a `from` and `end` date/time:
 
 ```
-int deleteValues(const char* feedId, const char* streamName, 
+int deleteValues(const char* deviceId, const char* streamName, 
                  const char* from, const char* end);
 ```
 
@@ -284,12 +284,12 @@ After you have configured your variables and the board, plug the LaunchPad board
 LaunchPad3200WifiPost
 -----------------
 
-This example shows how to send tilt values from the built-in accelerometer (on the [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs)) to M2X server. Before running this, you need to have a valid M2X Key, a feed ID and a stream name. 
+This example shows how to send tilt values from the built-in accelerometer (on the [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs)) to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. 
 
 LaunchPadWifiPost
 -----------------
 
-This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a feed ID and a stream name. The LaunchPad board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
+This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. The LaunchPad board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3000 BoosterPack](http://www.ti.com/tool/cc3000boost) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
 
 LaunchPadWifiPostMultiple
 ---------------
@@ -309,7 +309,7 @@ This one sends location data to M2X server. Idealy a GPS device should be used h
 LaunchPadWifiReadLocation
 ---------------
 
-This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
+This one reads location data of a device from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
 
 LaunchPadWifiDelete
 ---------
@@ -339,7 +339,7 @@ This one sends location data to M2X server. Idealy a GPS device should be used h
 LaunchPadWifiReadLocation
 ---------------
 
-This one reads location data of a feed from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
+This one reads location data of a device from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
 
 LaunchPadWifiDelete
 ---------

@@ -42,7 +42,7 @@
 #define DBGLNEND
 #endif  // DEBUG
 
-#define HEX(t_) ((char) (((t_) > 9) ? ((t_) - 10 + 'A') : ((t_) + '0')))
+#define TO_HEX(t_) ((char) (((t_) > 9) ? ((t_) - 10 + 'A') : ((t_) + '0')))
 #define MAX_DOUBLE_DIGITS 7
 
 static const int E_OK = 0;
@@ -59,7 +59,6 @@ static const int E_JSON_INVALID = -5;
 * is still stored in (const char *), and atoi/atof is needed to
 * get the actual value
 */
-	
 typedef void (*stream_value_read_callback)(const char* at,
                                            const char* value,
                                            int index,
@@ -87,10 +86,10 @@ public:
 
   // Push data stream value using PUT request, returns the HTTP status code
   template <class T>
-  int put(const char* feedId, const char* streamName, T value);
+  int updateStreamValue(const char* deviceId, const char* streamName, T value);
 
   // Post multiple values to M2X all at once.
-  // +feedId+ - id of the feed to post values
+  // +deviceId+ - id of the device to post values
   // +streamNum+ - Number of streams to post
   // +names+ - Array of stream names, the length of the array should
   // be exactly +streamNum+
@@ -109,12 +108,12 @@ public:
   // for the second stream, etc. The length of this array should be
   // the sum of all values in +counts+ array.
   template <class T>
-  int postMultiple(const char* feedId, int streamNum,
+  int postMultiple(const char* deviceId, int streamNum,
                    const char* names[], const int counts[],
                    const char* ats[], T values[]);
 
   // Fetch values for a particular data stream. Since memory is
-  // very limited on an Arduino, we cannot parse and get all the
+  // very limited on a board, we cannot parse and get all the
   // data points in memory. Instead, we use callbacks here: whenever
   // a new data point is parsed, we call the callback using the values,
   // after that, the values will be thrown away to make space for new
@@ -125,10 +124,9 @@ public:
   // For each data point, the callback will be called once. The HTTP
   // status code will be returned. And the content is only parsed when
   // the status code is 200.
-  int fetchValues(const char* feedId, const char* streamName,
-                  stream_value_read_callback callback, void* context,
-                  const char* startTime = NULL, const char* endTime = NULL,
-                  const char* limit = NULL);
+  int listStreamValues(const char* deviceId, const char* streamName,
+                       stream_value_read_callback callback, void* context,
+                       const char* query = NULL);
 
   // Update datasource location
   // NOTE: On an Arduino Uno and other ATMEGA based boards, double has
@@ -145,13 +143,13 @@ public:
   // without any precision problems.
   // Returned value is the http status code.
   template <class T>
-  int updateLocation(const char* feedId, const char* name,
+  int updateLocation(const char* deviceId, const char* name,
                      T latitude, T longitude, T elevation);
 
-  // Read location information for a feed. Also used callback to process
+  // Read location information for a device. Also used callback to process
   // data points for memory reasons. The HTTP status code is returned,
   // response is only parsed when the HTTP status code is 200
-  int readLocation(const char* feedId, location_read_callback callback,
+  int readLocation(const char* deviceId, location_read_callback callback,
                    void* context);
 
   // Delete values from a data stream
@@ -168,7 +166,7 @@ public:
   // The status code is 204 on success and 400 on a bad request (e.g. the
   // timestamp is not in ISO8601 format or the from timestamp is not less than
   // or equal to the end timestamp.
-  int deleteValues(const char* feedId, const char* streamName, 
+  int deleteValues(const char* deviceId, const char* streamName, 
                    const char* from, const char* end);
 private:
   Client* _client;
@@ -179,11 +177,11 @@ private:
   NullPrint _null_print;
 
   // Writes the HTTP header part for updating a stream value
-  void writePutHeader(const char* feedId,
+  void writePutHeader(const char* deviceId,
                       const char* streamName,
                       int contentLength);
   // Writes the HTTP header part for deleting stream values
-  void writeDeleteHeader(const char* feedId,
+  void writeDeleteHeader(const char* deviceId,
                          const char* streamName,
                          int contentLength);
   // Writes HTTP header lines including M2X API Key, host, content

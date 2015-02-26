@@ -10,7 +10,7 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to receive values
+char deviceId[] = "<device id>"; // Device you want to receive values
 char streamName[] = "<stream name>"; // Stream you want to receive values
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
@@ -19,17 +19,6 @@ char endTime[] = "<end date/time>"; // yyyy-mm-ddTHH:MM:SS.SSSZ
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
-
-void on_data_point_found(const char* at, const char* value, int index, void* context, int type) {
-  Serial.print("Found a data point, index:");
-  Serial.println(index);
-  Serial.print("Type:");
-  Serial.println(type);
-  Serial.print("At:");
-  Serial.println(at);
-  Serial.print("Value:");
-  Serial.println(value);
-}
 
 void setup() {
   Serial.begin(115200);
@@ -53,7 +42,7 @@ void setup() {
   printWifiStatus();
   
   // Delete values
-  int response = m2xClient.deleteValues(feedId, 
+  int response = m2xClient.deleteValues(deviceId, 
                                         streamName,
                                         fromTime,
                                         endTime);

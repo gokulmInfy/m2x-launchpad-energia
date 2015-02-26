@@ -10,7 +10,7 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to read
+char deviceId[] = "<device id>"; // Device you want to read
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 char name[] = "<location name>"; // Name of current location of datasource
@@ -57,7 +57,7 @@ void loop() {
   Serial.print("  Elevation: ");
   Serial.println(elevation);
   
-  int response = m2xClient.updateLocation(feedId, name, latitude, longitude,
+  int response = m2xClient.updateLocation(deviceId, name, latitude, longitude,
                                           elevation);
   Serial.print("M2x client response code: ");
   Serial.println(response);

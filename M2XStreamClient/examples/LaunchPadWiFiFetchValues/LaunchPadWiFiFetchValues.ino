@@ -10,7 +10,7 @@ int keyIndex = 0;            // your network key Index number (needed only for W
 
 int status = WL_IDLE_STATUS;
 
-char feedId[] = "<feed id>"; // Feed you want to receive values
+char deviceId[] = "<device id>"; // Device you want to receive values
 char streamName[] = "<stream name>"; // Stream you want to receive values
 char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
@@ -51,7 +51,7 @@ void setup() {
 }
 
 void loop() {
-  int response = m2xClient.fetchValues(feedId, streamName, on_data_point_found, NULL);
+  int response = m2xClient.listStreamValues(deviceId, streamName, on_data_point_found, NULL);
   Serial.print("M2X client response code: ");
   Serial.println(response);
 
