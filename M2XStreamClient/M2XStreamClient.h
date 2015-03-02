@@ -108,9 +108,9 @@ public:
   // for the second stream, etc. The length of this array should be
   // the sum of all values in +counts+ array.
   template <class T>
-  int postMultiple(const char* deviceId, int streamNum,
-                   const char* names[], const int counts[],
-                   const char* ats[], T values[]);
+  int postDeviceUpdates(const char* deviceId, int streamNum,
+                        const char* names[], const int counts[],
+                        const char* ats[], T values[]);
 
   // Fetch values for a particular data stream. Since memory is
   // very limited on a board, we cannot parse and get all the

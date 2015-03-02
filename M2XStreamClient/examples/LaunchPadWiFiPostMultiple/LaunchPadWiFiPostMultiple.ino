@@ -65,8 +65,8 @@ void loop() {
   
   double values[] = { degreesF, degreesC, humidity };
   
-  int response = m2xClient.postMultiple(deviceId, 2, streamNames,
-                                        counts, ats, values);
+  int response = m2xClient.postDeviceUpdates(deviceId, 2, streamNames,
+                                             counts, ats, values);
   Serial.print("M2X client response code: ");
   Serial.println(response);
 

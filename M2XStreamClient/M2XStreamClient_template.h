@@ -54,7 +54,7 @@ inline int write_multiple_values(Print* print, int streamNum,
 }
 
 template <class T>
-1int M2XStreamClient::postDeviceUpdates(const char* deviceId, int streamNum,
+int M2XStreamClient::postDeviceUpdates(const char* deviceId, int streamNum,
                                        const char* names[], const int counts[],
                                        const char* ats[], T values[]) {
   if (_client->connect(_host, _port)) {
