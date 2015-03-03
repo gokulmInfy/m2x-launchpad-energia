@@ -30,7 +30,7 @@ This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the 
 
    **NOTE**: Since we are now using the old v1.1.2 API(we will migrate to the new API soon), please use the fork version of jsonlite listed above instead of the original one.
 
-2. Open the Energia IDE, click `Sketch->Add File...`, then navigate to `amalgamated/jsonlite` folder in the cloned jsonlite repository. The jsonlite library will be imported to Energia this way.
+2. Open the Energia IDE, click `Energia->Preferences...`, look for `Sketchbook location` and keep it somewhere. Then locate at this path using your file browser of choice, open the `libraries` folder at this path(create one if it does not exist already). Copy the `jsonlite` folder there.
 
    **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
    * `jsonlite`: the repo folder
@@ -38,7 +38,7 @@ This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the 
    * `jsonlite/amalgamated/jsonlite`: the flattened jsonlite source
 
    The last one here should be the one to use, the first 2 won't work!
-3. Use the instructions outlined in Step 2 above to import the `M2XStreamClient` library in the current folder.
+3. Use the instructions outlined in Step 2 above to copy the `M2XStreamClient` folder to correct location.
 4. Now you can find M2X examples under `File->Examples->M2XStreamClient`
 5. Enjoy coding!
 
