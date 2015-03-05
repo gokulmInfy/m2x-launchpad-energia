@@ -1,6 +1,6 @@
+#include <aJSON.h>
 #include "SPI.h"
 #include "WiFi.h"
-#include <jsonlite.h>
 
 #include "M2XStreamClient.h"
 
@@ -15,28 +15,6 @@ char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
-
-void on_location_found(const char* name,
-                       double latitude,
-                       double longitude,
-                       double elevation,
-                       const char* timestamp,
-                       int index,
-                       void* context) {
-  Serial.print("Found a location, index:");
-  Serial.println(index);
-  Serial.print("Name: ");
-  Serial.println(name);
-  Serial.print("Latitude: ");
-  Serial.println(latitude);
-  Serial.print("Longitude: ");
-  Serial.println(longitude);
-  Serial.print("Elevation: ");
-  Serial.println(elevation);
-  Serial.print("Timestamp: ");
-  Serial.println(timestamp);
-}
-
 
 void setup() {
   Serial.begin(115200);
@@ -61,11 +39,38 @@ void setup() {
 }
 
 void loop() {
-  int response = m2xClient.readLocation(deviceId, on_location_found, NULL);
+  aJsonObject *object = NULL;
+  int response = m2xClient.readLocation(deviceId, &object);
   Serial.print("M2x client response code: ");
   Serial.println(response);
 
   if (response == -1) while(1) ;
+
+  if (object) {
+    aJsonObject *waypoints = aJson.getObjectItem(object, "waypoints");
+    for (unsigned char i = 0; i < aJson.getArraySize(waypoints); i++) {
+      aJsonObject *item = aJson.getArrayItem(waypoints, i);
+      aJsonObject *name = aJson.getObjectItem(item, "name");
+      aJsonObject *timestamp = aJson.getObjectItem(item, "timestamp");
+      aJsonObject *lat = aJson.getObjectItem(item, "latitude");
+      aJsonObject *lon = aJson.getObjectItem(item, "longitude");
+      aJsonObject *elevation = aJson.getObjectItem(item, "elevation");
+
+      Serial.print("Found a location, index:");
+      Serial.println(i);
+      Serial.print("Name: ");
+      Serial.println(name->valuestring);
+      Serial.print("Latitude: ");
+      Serial.println(lat->valuestring);
+      Serial.print("Longitude: ");
+      Serial.println(lon->valuestring);
+      Serial.print("Elevation: ");
+      Serial.println(elevation->valuestring);
+      Serial.print("Timestamp: ");
+      Serial.println(timestamp->valuestring);
+    }
+    aJson.deleteItem(object);
+  }
 
   delay(5000);
 }

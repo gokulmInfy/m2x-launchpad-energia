@@ -1,6 +1,6 @@
+#include <aJSON.h>
 #include "SPI.h"
 #include "WiFi.h"
-#include <jsonlite.h>
 
 #include "M2XStreamClient.h"
 

@@ -52,27 +52,6 @@ static const int E_NOTREACHABLE = -3;
 static const int E_INVALID = -4;
 static const int E_JSON_INVALID = -5;
 
-/*
-* +type+ indicates the value type: 1 for string, 2 for number
-* NOTE that the value type here only contains a hint on how
-* you can use the value. Even though 2 is returned, the value
-* is still stored in (const char *), and atoi/atof is needed to
-* get the actual value
-*/
-typedef void (*stream_value_read_callback)(const char* at,
-                                           const char* value,
-                                           int index,
-                                           void* context,
-                                           int type);
-
-typedef void (*location_read_callback)(const char* name,
-                                       double latitude,
-                                       double longitude,
-                                       double elevation,
-                                       const char* timestamp,
-                                       int index,
-                                       void* context);
-
 class M2XStreamClient {
 public:
   static const char* kDefaultM2XHost;
@@ -125,8 +104,8 @@ public:
   // status code will be returned. And the content is only parsed when
   // the status code is 200.
   int listStreamValues(const char* deviceId, const char* streamName,
-                       stream_value_read_callback callback, void* context,
-                       const char* query = NULL);
+                       const char* query,
+                       aJsonObject **out);
 
   // Update datasource location
   // NOTE: On an Arduino Uno and other ATMEGA based boards, double has
@@ -149,8 +128,7 @@ public:
   // Read location information for a device. Also used callback to process
   // data points for memory reasons. The HTTP status code is returned,
   // response is only parsed when the HTTP status code is 200
-  int readLocation(const char* deviceId, location_read_callback callback,
-                   void* context);
+  int readLocation(const char* deviceId, aJsonObject **out);
 
   // Delete values from a data stream
   // You will need to provide from and end date/time strings in the ISO8601 
@@ -203,12 +181,8 @@ private:
   int waitForString(const char* str);
   // Closes the connection
   void close();
-  // Parses JSON response of stream value API, and calls callback function
-  // once we get a data point
-  int readStreamValue(stream_value_read_callback callback, void* context);
-  // Parses JSON response of location API, and calls callback function once
-  // we get a data point
-  int readLocation(location_read_callback callback, void* context);
+  // Parses JSON response
+  int parseJsonBody(aJsonObject **out);
 };
 
 #include "M2XStreamClient_template.h"

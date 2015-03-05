@@ -1,9 +1,9 @@
+#include <aJSON.h>
 #include <WiFi.h>
 #include <Wire.h>
 #include <BMA222.h>
 #include "SPI.h"
 
-#include <jsonlite.h>
 #include "M2XStreamClient.h"
 
 char ssid[] = "<ssid>"; //  your network SSID (name)

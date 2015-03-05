@@ -1,4 +1,4 @@
-#include <jsonlite.h>
+#include <aJSON.h>
 #include <SPI.h>
 #include <Ethernet.h>
 
@@ -16,17 +16,6 @@ char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 EthernetClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
-
-void on_data_point_found(const char* at, const char* value, int index, void* context, int type) {
-  Serial.print("Found a data point, index:");
-  Serial.println(index);
-  Serial.print("Type:");
-  Serial.println(type);
-  Serial.print("At:");
-  Serial.println(at);
-  Serial.print("Value:");
-  Serial.println(value);
-}
 
 void setup() {
   Serial.begin(115200);
@@ -48,11 +37,42 @@ void setup() {
 }
 
 void loop() {
-  int response = m2xClient.listStreamValues(deviceId, streamName, on_data_point_found, NULL);
+  aJsonObject *object = NULL;
+  int response = m2xClient.listStreamValues(deviceId, streamName, NULL, &object);
   Serial.print("M2X client response code: ");
   Serial.println(response);
 
   if (response == -1) while(1) ;
+
+  if (object) {
+    aJsonObject *values = aJson.getObjectItem(object, "values");
+    for (unsigned char i = 0; i < aJson.getArraySize(values); i++) {
+      aJsonObject *item = aJson.getArrayItem(values, i);
+      aJsonObject *timestamp = aJson.getObjectItem(item, "timestamp");
+      aJsonObject *val = aJson.getObjectItem(item, "value");
+
+      Serial.print("Found a data point, index: ");
+      Serial.println(i);
+      Serial.print("Timestamp: ");
+      Serial.println(timestamp->valuestring);
+      Serial.print("Value: ");
+      switch (val->type) {
+        case aJson_Int:
+          Serial.println(val->valueint);
+          break;
+        case aJson_Float:
+          Serial.println(val->valuefloat);
+          break;
+        case aJson_String:
+          Serial.println(val->valuestring);
+          break;
+        default:
+          Serial.println("(Unknown format)");
+          break;
+      }
+    }
+    aJson.deleteItem(object);
+  }
 
   delay(5000);
 }

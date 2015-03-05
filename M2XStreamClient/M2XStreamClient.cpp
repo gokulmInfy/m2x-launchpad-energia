@@ -1,9 +1,5 @@
+#include <aJSON.h>
 #include "M2XStreamClient.h"
-
-#include <jsonlite.h>
-
-#include "StreamParseFunctions.h"
-#include "LocationParseFunctions.h"
 
 const char* M2XStreamClient::kDefaultM2XHost = "api-m2x.att.com";
 
@@ -38,8 +34,8 @@ M2XStreamClient::M2XStreamClient(Client* client,
 }
 
 int M2XStreamClient::listStreamValues(const char* deviceId, const char* streamName,
-                                      stream_value_read_callback callback, void* context,
-                                      const char* query) {
+                                      const char* query,
+                                      aJsonObject **out) {
   if (_client->connect(_host, _port)) {
     DBGLN("%s", "Connected to M2X server!");
     _client->print("GET /v2/devices/");
@@ -63,16 +59,14 @@ int M2XStreamClient::listStreamValues(const char* deviceId, const char* streamNa
   }
   int status = readStatusCode(false);
   if (status == 200) {
-    readStreamValue(callback, context);
+    parseJsonBody(out);
   }
 
   close();
   return status;
 }
 
-int M2XStreamClient::readLocation(const char* deviceId,
-                                  location_read_callback callback,
-                                  void* context) {
+int M2XStreamClient::readLocation(const char* deviceId, aJsonObject **out) {
   if (_client->connect(_host, _port)) {
     DBGLN("%s", "Connected to M2X server!");
     _client->print("GET /v2/devices/");
@@ -86,7 +80,7 @@ int M2XStreamClient::readLocation(const char* deviceId,
   }
   int status = readStatusCode(false);
   if (status == 200) {
-    readLocation(callback, context);
+    parseJsonBody(out);
   }
 
   close();
@@ -312,135 +306,15 @@ void M2XStreamClient::close() {
   _client->stop();
 }
 
-int M2XStreamClient::readStreamValue(stream_value_read_callback callback,
-                                     void* context) {
-  const int BUF_LEN = 64;
-  char buf[BUF_LEN];
-
-  int length = readContentLength();
-  if (length < 0) {
+int M2XStreamClient::parseJsonBody(aJsonObject **out) {
+  int err = skipHttpHeader();
+  if (err != E_OK) {
     close();
-    return length;
+    return err;
   }
+  err = 0;
 
-  int index = skipHttpHeader();
-  if (index != E_OK) {
-    close();
-    return index;
-  }
-  index = 0;
-
-  stream_parsing_context_state state;
-  state.state = state.index = 0;
-  state.callback = callback;
-  state.context = context;
-
-  jsonlite_parser_callbacks cbs = jsonlite_default_callbacks;
-  cbs.key_found = on_stream_key_found;
-  cbs.number_found = on_stream_number_found;
-  cbs.string_found = on_stream_string_found;
-  cbs.context.client_state = &state;
-
-  jsonlite_parser p = jsonlite_parser_init(jsonlite_parser_estimate_size(5));
-  jsonlite_parser_set_callback(p, &cbs);
-
-  jsonlite_result result = jsonlite_result_unknown;
-  while (index < length) {
-    int i = 0;
-
-    DBG("%s", "Received Data: ");
-    while ((i < BUF_LEN) && _client->available()) {
-      buf[i++] = _client->read();
-      DBG("%c", buf[i - 1]);
-    }
-    DBGLNEND;
-
-    if ((!_client->connected()) &&
-        (!_client->available()) &&
-        ((index + i) < length)) {
-      jsonlite_parser_release(p);
-      close();
-      return E_NOCONNECTION;
-    }
-
-    result = jsonlite_parser_tokenize(p, buf, i);
-    if ((result != jsonlite_result_ok) &&
-        (result != jsonlite_result_end_of_stream)) {
-      jsonlite_parser_release(p);
-      close();
-      return E_JSON_INVALID;
-    }
-
-    index += i;
-  }
-
-  jsonlite_parser_release(p);
-  close();
-  return (result == jsonlite_result_ok) ? (E_OK) : (E_JSON_INVALID);
-}
-
-int M2XStreamClient::readLocation(location_read_callback callback,
-                                  void* context) {
-  const int BUF_LEN = 40;
-  char buf[BUF_LEN];
-
-  int length = readContentLength();
-  if (length < 0) {
-    close();
-    return length;
-  }
-
-  int index = skipHttpHeader();
-  if (index != E_OK) {
-    close();
-    return index;
-  }
-  index = 0;
-
-  location_parsing_context_state state;
-  state.state = state.index = 0;
-  state.callback = callback;
-  state.context = context;
-
-  jsonlite_parser_callbacks cbs = jsonlite_default_callbacks;
-  cbs.key_found = on_location_key_found;
-  cbs.string_found = on_location_string_found;
-  cbs.context.client_state = &state;
-
-  jsonlite_parser p = jsonlite_parser_init(jsonlite_parser_estimate_size(5));
-  jsonlite_parser_set_callback(p, &cbs);
-
-  jsonlite_result result = jsonlite_result_unknown;
-  while (index < length) {
-    int i = 0;
-
-    DBG("%s", "Received Data: ");
-    while ((i < BUF_LEN) && _client->available()) {
-      buf[i++] = _client->read();
-      DBG("%c", buf[i - 1]);
-    }
-    DBGLNEND;
-
-    if ((!_client->connected()) &&
-        (!_client->available()) &&
-        ((index + i) < length)) {
-      jsonlite_parser_release(p);
-      close();
-      return E_NOCONNECTION;
-    }
-
-    result = jsonlite_parser_tokenize(p, buf, i);
-    if ((result != jsonlite_result_ok) &&
-        (result != jsonlite_result_end_of_stream)) {
-      jsonlite_parser_release(p);
-      close();
-      return E_JSON_INVALID;
-    }
-
-    index += i;
-  }
-
-  jsonlite_parser_release(p);
-  close();
-  return (result == jsonlite_result_ok) ? (E_OK) : (E_JSON_INVALID);
+  aJsonStream stream(_client);
+  *out = aJson.parse(&stream);
+  return err;
 }
