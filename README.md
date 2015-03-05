@@ -24,23 +24,9 @@ How to Install the library
 
 This library is designed for use with the [Energia IDE](http://energia.nu).  Directions for installing and configuring the IDE can be found [here](http://energia.nu/Guide_index.html).
 
-This library depends on [jsonlite](https://github.com/citrusbyte/jsonlite), the installation steps are as follows:
-
-1. Clone the [jsonlite](https://github.com/citrusbyte/jsonlite) repository.
-
-   **NOTE**: Since we are now using the old v1.1.2 API(we will migrate to the new API soon), please use the fork version of jsonlite listed above instead of the original one.
-
-2. Open the Energia IDE, click `Energia->Preferences...`, look for `Sketchbook location` and keep it somewhere. Then locate at this path using your file browser of choice, open the `libraries` folder at this path(create one if it does not exist already). Copy the `jsonlite` folder there.
-
-   **NOTE**: If you cloned the jsonlite library, there will be 3 folders named jsonlite:
-   * `jsonlite`: the repo folder
-   * `jsonlite/jsonlite`: the un-flattened jsonlite source folder
-   * `jsonlite/amalgamated/jsonlite`: the flattened jsonlite source
-
-   The last one here should be the one to use, the first 2 won't work!
-3. Use the instructions outlined in Step 2 above to copy the `M2XStreamClient` folder to correct location.
-4. Now you can find M2X examples under `File->Examples->M2XStreamClient`
-5. Enjoy coding!
+1. Open the Energia IDE, click `Energia->Preferences...`, look for `Sketchbook location` and keep it somewhere. Then locate at this path using your file browser of choice, open the `libraries` folder at this path(create one if it does not exist already). Copy `M2XStreamClient` folder to this location.
+2. Now you can find M2X examples under `File->Examples->M2XStreamClient`
+3. Enjoy coding!
 
 Hardware Setup
 ==============
@@ -193,29 +179,18 @@ Please refer to the comments in the source code on how to use this function, bas
 List stream value
 -----------------
 
-To preserve memory when fetching and parsing JSON, we use a callback-based mechanism here. We parse the returned JSON string piece by piece, whenever we got a new stream value point, we will call the following callback functions:
-
-```
-typedef void (*stream_value_read_callback)(const char* at,
-                                           const char* value,
-                                           int index,
-                                           void* context,
-                                           int type);
-```
-
-The implementation of the callback function is left for the user to fill in, you can read the value of the point in the `value` argument, and the timestamp of the point in the `at` argument. We even pass the index of this this data point in the whole stream as well as a user-specified context variable to this function, so as you can perform different tasks on this.
-
-`type` indicates the type of value stored in `value`: 1 for string, 2 for number. However, keep in mind that `value` will always be a pointer to an array of char, even though `type` indicates the current value is a number. In this case, `atoi` or `atof` might be needed.
-
-To read the stream values, all you need to do is calling this function:
+The following API is used to list values of a specific stream:
 
 ```
 int listStreamValues(const char* deviceId, const char* streamName,
-                     stream_value_read_callback callback, void* context,
-                     const char* query = NULL);
+                     const char* query,
+                     aJsonObject **out);
+
 ```
 
-Besides the device ID and stream name, only the callback function and a user context needs to be specified. Optional filtering parameters such as start time, end time and limits per call can also be used here.
+Besides the device ID and stream name, a query string is supported. Please refer to the [API documentation](https://m2x.att.com/developer/documentation/v2/device#List-Data-Stream-Values) for valid query parameters, the query parameters must be formatted as [urlencoded form](http://www.w3.org/TR/html401/interact/forms.html#h-17.13.4.1).
+
+The response of the API is parsed using [aJson](https://github.com/interactive-matter/aJson).
 
 Update Datasource Location
 --------------------------
@@ -235,26 +210,13 @@ The reasons we are providing templated function is due to floating point value p
 Read Datasource Location
 ------------------------
 
-Similar to reading stream values, we also use callback functions here. The only difference is that different parameters are used in the function:
+You can use the following function to retrieve reported locations of a particular device.
 
 ```
-void (*location_read_callback)(const char* name,
-                               double latitude,
-                               double longitude,
-                               double elevation,
-                               const char* timestamp,
-                               int index,
-                               void* context);
+int readLocation(const char* deviceId, aJsonObject **out);
 ```
 
-For memory space consideration, now we only provide double-precision when reading locations. An index of the location points is also provided here together with a user-specified context.
-
-The API is also slightly different, in that the stream name is not needed here:
-
-```
-int readLocation(const char* deviceId, location_read_callback callback,
-                 void* context);
-```
+The response here is also parsed via aJson.
 
 Delete Values
 -------------
