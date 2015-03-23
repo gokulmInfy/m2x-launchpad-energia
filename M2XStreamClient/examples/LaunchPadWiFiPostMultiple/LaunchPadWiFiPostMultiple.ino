@@ -17,31 +17,45 @@ const int temperaturePin = A0;
 
 const char *streamNames[] = { "temperature", "humidity" };
 int counts[] = { 2, 1 };
-const char *ats[] = { "2014-05-01T19:15:00Z", NULL, NULL };
+const char *ats[] = { "2015-03-22T19:15:00Z", "2015-03-22T19:16:00Z", "2015-03-22T19:15:00Z" };
 double values[] = { 10.0, 20.0, 7.5 };
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
-  // Setup pins of CC3000 BoosterPack
-  WiFi.setCSpin(18);  // 18: P2_2 @ F5529, PE_0 @ LM4F/TM4C
-  WiFi.setENpin(2);   //  2: P6_5 @ F5529, PB_5 @ LM4F/TM4C
-  WiFi.setIRQpin(19); // 19: P2_0 @ F5529, PB_2 @ LM4F/TM4C
+  // Setup pins of CC3000 BoosterPack (uncomment 4 lines to use)
+  // WiFi.setCSpin(18);  // 18: P2_2 @ F5529, PE_0 @ LM4F/TM4C
+  // WiFi.setENpin(2);   //  2: P6_5 @ F5529, PB_5 @ LM4F/TM4C
+  // WiFi.setIRQpin(19); // 19: P2_0 @ F5529, PB_2 @ LM4F/TM4C
+  // delay(10);
+  
+  // attempt to connect to Wifi network:
+  Serial.print("Attempting to connect to Network named: ");
+  // print the network name (SSID);
+  Serial.println(ssid); 
+  // Connect to WPA/WPA2 network. Change this line if using open or WEP network:
+  WiFi.begin(ssid, password);
+  while ( WiFi.status() != WL_CONNECTED) {
+    // print dots while we wait to connect
+    Serial.print(".");
+    delay(300);
+  }
+  
+  Serial.println("\nYou're connected to the network");
+  Serial.println("Waiting for an ip address");
+  
+  while (WiFi.localIP() == INADDR_NONE) {
+    // print dots while we wait for an ip addresss
+    Serial.print(".");
+    delay(300);
+  }
 
-  delay(10);
-  // Connect to an AP with WPA/WPA2 security
-  Serial.println("Connecting to WiFi....");
-  WiFi.begin(ssid, pass); // Use this if your wifi network requires a password
-  // WiFi.begin(ssid);    // Use this if your wifi network is unprotected.
-
-  Serial.println("Connect success!");
-  Serial.println("Waiting for DHCP address");
-  // Wait for DHCP address
-  delay(5000);
-  // Print WiFi status
+  Serial.println("\nIP Address obtained");
+  
+  // you're connected now, so print out the status  
   printWifiStatus();
 }
 
