@@ -294,33 +294,3 @@ LICENSE
 =======
 
 This library is released under the MIT license. See [`M2XStreamClient/LICENSE`](M2XStreamClient/LICENSE) for the terms.
---
-
-This one sends location data to M2X server. Idealy a GPS device should be used here to read the cordinates, but for simplicity, we just use pre-set values here to show how to use the API.
-
-LaunchPadWifiReadLocation
----------------
-
-This one reads location data of a device from M2X server, and prints them to Serial interfact. You can check the output in the `Serial Monitor` of the Energia IDE.
-
-LaunchPadWifiDelete
----------
-
-This example shows how to delete values within a stream by providing a date/time range.
-
-LaunchPadEthernetPost
----------------
-
-This one is similar to the `LaunchPadWifiPost`, except that EthernetClient is used instead of WifiClient. If you are using a [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) board, you can use this example.
-
-LaunchPadEthernetReceive
-------------------
-
-This one is similar to the `LaunchPadWifiReceive`, except that EthernetClient is used instead of WifiClient.
-
-
-
-LICENSE
-=======
-
-This library is released under the MIT license. See [`M2XStreamClient/LICENSE`](M2XStreamClient/LICENSE) for the terms.
