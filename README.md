@@ -1,9 +1,9 @@
 LaunchPad Energia M2X API Client
 ================================
 
-The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X Data Service](https://m2x.att.com/) from TI [Tiva C Series LaunchPad](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) based devices.
+The LaunchPad Energia library is used to send/receive data to/from [AT&amp;T's M2X Data Service](https://m2x.att.com/) from [Texas Instruments LaunchPad](http://www.ti.com/launchpad) development kits. It is compatible with any Energia enabled software environments and tested in the [Energia IDE](http://www.energia.nu).
 
-**NOTE**: Unless stated otherwise, the following instructions are specific to [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs), [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs), and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards. If you are using other boards, the exact steps may vary.
+**NOTE**: Unless stated otherwise, the following instructions are specific to [CC3200 SimpleLink Wi-Fi LaunchPad CC3200-LAUNCHXL](http://www.ti.com/tool/cc3200-launchxl), [TM4C129 Connected LaunchPad EK-TM4C1294XL](http://www.ti.com/tool/ek-tm4c1294xl), and any LaunchPads compatible with the [CC3100  BoosterPack](http://www.ti.com/tool/cc3100boost) including [MSP430F5529 LaunchPad](http://www.ti.com/tool/msp-exp430f5529lp), [MSP432 LaunchPad](http://www.ti.com/tool/msp-exp432p401r), and [TM4C123 LaunchPad EK-TM4C123GXL](http://www.ti.com/tool/ek-tm4c123gxl). If you are using other boards, the exact steps may vary.
 
 The LaunchPad Energia library is based on the [attm2x/m2x-arduino](https://github.com/attm2x/m2x-arduino) library.
 
@@ -15,14 +15,14 @@ Getting Started
 2. Obtain your _Master_ from the Master Keys tab of your [Account Settings](https://m2x.att.com/account) screen.
 3. Create your first [Device](https://m2x.att.com/devices) and copy its _Device ID_.
 4. Review the [M2X API Documentation](https://m2x.att.com/developer/documentation/v2/overview).
-5. Obtain a TI Tiva C Series Launchpad, either with built in ethernet/wifi or with a wifi BoosterPack, and [set it up](http://www.ti.com/lit/ug/spmu296/spmu296.pdf).  These docs were written for [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs), [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3100 BoosterPack](http://www.ti.com/tool/cc3100boost), and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards.
+5. Obtain a [TI LaunchPad](http://www.ti.com/launchpad), either with built in Ethernet/Wi-Fi or with a Wi-Fi BoosterPack, and [set it up](http://www.ti.com/lit/ug/spmu296/spmu296.pdf).  These docs were written for [CC3200 SimpleLink Wi-Fi LaunchPad CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs), [TM4C123 LaunchPad EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3100 BoosterPack](http://www.ti.com/tool/cc3100boost), and [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) boards.
 
 Please consult the [M2X glossary](https://m2x.att.com/developer/documentation/v1/glossary) if you have questions about any M2X specific terms.
 
 How to Install the library
 ==========================
 
-This library is designed for use with the [Energia IDE](http://energia.nu).  Directions for installing and configuring the IDE can be found [here](http://energia.nu/Guide_index.html).
+This library is designed for use with the [Energia IDE](http://energia.nu).  Directions for installing and configuring the IDE can be found [here](http://energia.nu/guide).  
 
 1. Open the Energia IDE, click `Energia->Preferences...`, look for `Sketchbook location` and keep it somewhere. Then locate at this path using your file browser of choice, open the `libraries` folder at this path(create one if it does not exist already). Copy `M2XStreamClient` folder to this location.
 2. Now you can find M2X examples under `File->Examples->M2XStreamClient`
@@ -34,19 +34,19 @@ Hardware Setup
 Board Setup
 -----------
 
-The Energia website has a very good [tutorial](http://energia.nu/Guide_index.html) on setting up the LaunchPad board. It contains detailed instructions on how to install the Energia IDE, and sets up your board for initial testing. Feel free to proceed to the [LaunchPad site](http://www.ti.com/ww/en/launchpad/launchpads-connected.html#tabs) to get a basic idea on LaunchPad.
+The Energia website has a very good [tutorial](http://energia.nu/guide) on setting up the LaunchPad board. It contains detailed instructions on how to install the Energia IDE, and sets up your board for initial testing. Feel free to proceed to the [LaunchPad site](http://www.ti.com/launchpad) to get a basic idea on LaunchPad.
 
 Wifi/Ethernet Shield Setup
 --------------------------
 
-The [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs) has built-in wifi and does not need any additional hardware.  The [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) board already has Ethernet on-board, and does not require any additional hardwre. 
+The [CC3200 SimpleLink Wi-Fi LaunchPad CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs) has built-in Wi-Fi and does not need any additional hardware.  The [TM4C129 Connected LaunchPad EK-TM4C1294XL](http://www.ti.com/tool/ek-tm4c1294gxl) already has Ethernet on-board, and does not require any additional hardwre. 
 
-If you are using a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) board,to send data to the AT&amp;T M2X Data Service, or receive data from the AT&amp;T M2X Data Service, your LaunchPad board needs a connection to the Internet. Hence a LaunchPad [SimpleLink™ Wi-Fi CC3100 BoosterPack](http://www.ti.com/tool/cc3100boost) is needed to give your board the power to connect to the Internet. To install the shield, hook the shield on your LaunchPad board — you can use the pins on the shield the same way as the real pins on the LaunchPad boards.
+If you are using a [TM4C123 LaunchPad EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) board,to send data to the AT&amp;T M2X Data Service, or receive data from the AT&amp;T M2X Data Service, your LaunchPad board needs a connection to the Internet. Hence a [CC3100 SimpleLink™ Wi-Fi BoosterPack](http://www.ti.com/tool/cc3100boost) is needed to give your board the power to connect to the Internet. To install the BoosterPack (referred to as shield/cape in other ecosystems), insert the BoosterPack either on top or on the bottom of your LaunchPad board  — you can use the pins on the BoosterPack the same way as the real pins on the LaunchPad boards.
 
 Sensor Setup
 ------------
 
-Different sensors can be hooked up to an LaunchPad board to provide different properties including temperatures, humidity, etc. You can use a breadboard as well as wires to connect different sensors to your LaunchPad. For detailed tutorials on connecting different sensors, please refer to the LaunchPad [Wiki page](http://processors.wiki.ti.com/index.php/Tiva_C_Series_TM4C123G_LaunchPad).
+Different sensors can be hooked up to a LaunchPad board to provide different properties including temperatures, humidity, etc. These are available as BoosterPacks and as modules such as the [Grove system](http://www.seeedstudio.com/wiki/GROVE_System) from Seeedstudio. You can also use a breadboard and wires to connect different sensors and components to your LaunchPad. For detailed tutorials on connecting different sensors, please refer to the Energia [Getting Started Guide](http://www.energia.nu/guide). To see a list of BoosterPacks you can check out the [TI BoosterPack page](http://www.ti.com/boosterpack).
 
 
 Variables used in Examples
@@ -57,25 +57,26 @@ In order to run the given examples, different variables need to be configured. W
 Network Configuration
 ---------------------
 
-If you are using a Wifi Shield, the following variables need configuration:
+If you are using a Wi-Fi BosoterPack or LaunchPad, the following variables need configuration:
 
 ```
 char ssid[] = "<ssid>";
 char pass[] = "<WPA password>";
 ```
 
-Just fill in the SSID and password of the Wifi hotspot, you should be good to go.
+Just fill in the SSID and password of the Wi-Fi hotspot, you should be good to go.
 
-For an Ethernet Shield, the following variables are needed:
+For an Ethernet BoosterPack or LaunchPad, the following variables are needed:
 
 ```
 byte mac[] = { 0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED };
 IPAddress ip(192,168,1,17);
 ```
 
-For a newer Ethernet Shield, the MAC address should be printed on a sticker on the shield. However, some sold Ethernet Shields have no MAC address shown on the board. In this case, you can use any MAC address, as long as it is not conflicted with another network device within the same LAN.
+For an Ethernet device, the MAC address should be printed on a sticker on the hardware. In a case where there is no MAC address shown on the board, you can use any MAC address, as long as it is not conflicted with another network device within the same LAN.
 
 The IP address here is only used when DHCP fails to give a valid IP address. It is recommended, though not required, to provide a unique IP address here.
+
 
 M2X API Key
 -----------
@@ -111,7 +112,7 @@ char streamName[] = "<stream name>";
 Using the M2XStreamClient library
 =========================
 
-The M2X LaunchPad library can be used with both Wifi connection and Ethernet connection. For a Wifi connection, use the following code:
+The M2X LaunchPad library can be used with both Wi-Fi connection and Ethernet connection. For a Wi-Fi connection, use the following code:
 
 ```
 WiFiClient client;
@@ -235,23 +236,23 @@ Examples
 
 We provide a series of examples that will help you get an idea of how to use the `M2XStreamClient` library to perform all kinds of tasks.
 
-Note that the examples may apply to certain types of boards. For example, the ones with `Wifi` in the name apply to `Tiva C Series` boards with a `CC3300 BoosterPack`, while the ones with `Ethernet` apply to `Tiva C Series` boards with built-in ethernet.
+Note that the examples may apply to certain types of boards. For example, the ones with `Wifi` in the name apply to LaunchPad boards with a `CC3100 BoosterPack`, while the ones with `Ethernet` apply to LaunchPad boards with built-in ethernet.
 
-Note that the examples contain fictionary variables, and that they need to be configured as per the instructions above before running on your LaunchPad board. Each of the examples here also needs either a Wifi Shield or an Ethernet Shield hooked up to your device.
+Note that the examples contain fictionary variables, and that they need to be configured as per the instructions above before running on your LaunchPad board. Each of the examples here also needs an accessible Wi-Fi or Ethernet connection hooked up to your device.  For Wi-Fi, it is important that you use a hotspot that is friendly for embedded devices. Hotspots that have a welcome screen required to login will not work. 
 
 In the `LaunchPadWifiPost` and `LaunchPadEthernetPost`, a temperature sensor, a breadboard and 5 wires are also needed to get temperature data, you need to wire the board like [this](http://cl.ly/image/3M0P3T1A0G0l) before running the code.
 
-After you have configured your variables and the board, plug the LaunchPad board into your computer via a Micro-USB cable, click `Verify` in the Energia IDE, then click `Upload`, and the code should be uploaded to the board. You can check all the outputs in the `Serial Monitor` of the Energia IDE.
+After you have configured your variables and the board, plug the LaunchPad board into your computer via a Micro-USB cable, click `Verify` in the Energia IDE, then click `Upload`, and the code should be uploaded to the board. You can check all the outputs in the `Serial Monitor` of the Energia IDE.  Ensure the baud rate in the code matches the baud rate of the Serial Monitor to correctly receive data. 
 
 LaunchPad3200WifiPost
 -----------------
 
-This example shows how to send tilt values from the built-in accelerometer (on the [Tiva C Series CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs)) to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. 
+This example shows how to send tilt values from the built-in accelerometer (on the [CC3200 SimpleLink Wi-Fi LaunchPad CC3200-LAUNCHXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-cc3200-launchxl.html#tabs)) to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. 
 
 LaunchPadWifiPost
 -----------------
 
-This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. The LaunchPad board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using a [Tiva C Series EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3100 BoosterPack](http://www.ti.com/tool/cc3100boost) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
+This example shows how to post temperatures to M2X server. Before running this, you need to have a valid M2X Key, a device ID and a stream name. The LaunchPad board needs to be configured like [this](http://cl.ly/image/3M0P3T1A0G0l). In this example, we are using a [TM4C123 LaunchPad EK-TM4C123GXL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c123gxl.html#tabs) with [SimpleLink™ Wi-Fi CC3100 BoosterPack](http://www.ti.com/tool/cc3100boost) board. If you are using other boards, keep in mind that we are reading from `A0` in the code, the wiring should be similar to this one shown in the illustration.
 
 LaunchPadWifiPostMultiple
 ---------------
@@ -261,7 +262,7 @@ This example shows how to post multiple values to multiple streams in one API ca
 LaunchPadWifiFetchValues
 --------------
 
-This example reads stream values from M2X server. And prints the stream data point got to Serial interface. You can find the actual values in the Energia `Serial Monitor`.
+This example reads stream values from M2X server and prints the stream data points out to Serial interface. You can find the actual values in the Energia `Serial Monitor`.
 
 LaunchPadWifiUpdateLocation
 -----------------
@@ -281,7 +282,7 @@ This example shows how to delete values within a stream by providing a date/time
 LaunchPadEthernetPost
 ---------------
 
-This one is similar to the `LaunchPadWifiPost`, except that EthernetClient is used instead of WifiClient. If you are using a [Tiva C Series EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) board, you can use this example.
+This one is similar to the `LaunchPadWifiPost`, except that EthernetClient is used instead of WifiClient. If you are using a [TM4C129 Connected LaunchPad EK-TM4C1294XL](http://www.ti.com/ww/en/launchpad/launchpads-connected-ek-tm4c1294xl.html#tabs) board, you can use this example.
 
 LaunchPadEthernetReceive
 ------------------
