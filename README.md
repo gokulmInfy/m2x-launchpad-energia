@@ -19,6 +19,10 @@ Getting Started
 
 Please consult the [M2X glossary](https://m2x.att.com/developer/documentation/v1/glossary) if you have questions about any M2X specific terms.
 
+Energia + AT&T M2X: Video Tutorial
+==========================
+[![Energia + AT&T M2X: Video Tutorial](http://img.youtube.com/vi/5FPMf2Bjmv8/0.jpg)](https://www.youtube.com/watch?v=5FPMf2Bjmv8&feature=youtu.be)
+
 How to Install the library
 ==========================
 
