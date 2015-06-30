@@ -7,7 +7,7 @@
 
 #ifdef ENERGIA_PLATFORM
 #include "Energia.h"
-#define USER_AGENT "User-Agent: M2X Energia Client/2.0.1"
+#define USER_AGENT "User-Agent: M2X Energia Client/2.1.0"
 #endif
 
 #ifdef ARDUINO_PLATFORM
