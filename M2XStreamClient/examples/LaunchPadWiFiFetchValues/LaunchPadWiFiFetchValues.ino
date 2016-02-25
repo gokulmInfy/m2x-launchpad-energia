@@ -2,6 +2,8 @@
 #include "SPI.h"
 #include "WiFi.h"
 
+#define ENERGIA_PLATFORM
+#define M2X_ENABLE_READER
 #include "M2XStreamClient.h"
 
 char ssid[] = "<ssid>"; //  your network SSID (name)
@@ -16,6 +18,27 @@ char m2xKey[] = "<M2X access key>"; // Your M2X access key
 
 WiFiClient client;
 M2XStreamClient m2xClient(&client, m2xKey);
+
+void on_data_point_found(const char* at, m2x_value value, int index, void* context, int type) {
+  Serial.print("Found a data point, index:");
+  Serial.println(index);
+  Serial.print("Type:");
+  Serial.println(type);
+  Serial.print("At:");
+  Serial.println(at);
+  Serial.print("Value:");
+  switch (type) {
+    case 1:
+      Serial.println(value.value_string);
+      break;
+    case 3:
+      Serial.println(value.value_integer);
+      break;
+    case 4:
+      Serial.println(value.value_number);
+      break;
+  }
+}
 
 void setup() {
     Serial.begin(9600);
@@ -48,42 +71,11 @@ void setup() {
 }
 
 void loop() {
-  aJsonObject *object = NULL;
-  int response = m2xClient.listStreamValues(deviceId, streamName, NULL, &object);
+  int response = m2xClient.listStreamValues(deviceId, streamName, on_data_point_found, NULL);
   Serial.print("M2X client response code: ");
   Serial.println(response);
 
   if (response == -1) while(1) ;
-
-  if (object) {
-    aJsonObject *values = aJson.getObjectItem(object, "values");
-    for (unsigned char i = 0; i < aJson.getArraySize(values); i++) {
-      aJsonObject *item = aJson.getArrayItem(values, i);
-      aJsonObject *timestamp = aJson.getObjectItem(item, "timestamp");
-      aJsonObject *val = aJson.getObjectItem(item, "value");
-
-      Serial.print("Found a data point, index: ");
-      Serial.println(i);
-      Serial.print("Timestamp: ");
-      Serial.println(timestamp->valuestring);
-      Serial.print("Value: ");
-      switch (val->type) {
-        case aJson_Int:
-          Serial.println(val->valueint);
-          break;
-        case aJson_Float:
-          Serial.println(val->valuefloat);
-          break;
-        case aJson_String:
-          Serial.println(val->valuestring);
-          break;
-        default:
-          Serial.println("(Unknown format)");
-          break;
-      }
-    }
-    aJson.deleteItem(object);
-  }
 
   delay(5000);
 }

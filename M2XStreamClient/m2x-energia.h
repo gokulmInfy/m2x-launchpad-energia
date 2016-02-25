@@ -1,3 +1,26 @@
+#include "Energia.h"
+#define USER_AGENT "User-Agent: M2X Energia Client/" M2X_VERSION
+
+#ifdef DEBUG
+#define DBG(fmt_, data_) Serial.print(data_)
+#define DBGLN(fmt_, data_) Serial.println(data_)
+#define DBGLNEND Serial.println()
+#endif  /* DEBUG */
+
+/* By default Energia board uses aJson package */
+#ifdef M2X_ENABLE_READER
+#if !(defined(M2X_READER_JSONLITE) || defined(M2X_READER_AJSON))
+#define M2X_READER_AJSON
+#endif
+#endif  /* M2X_ENABLE_READER */
+
+class M2XTimer {
+public:
+  void start() {}
+
+  unsigned long read_ms() { return millis(); }
+};
+
 #ifdef __cplusplus
 extern "C"{
 #endif // __cplusplus
@@ -44,5 +67,3 @@ double atof(const char *s)
 #ifdef __cplusplus
 } // extern "C"
 #endif // __cplusplus
-
-

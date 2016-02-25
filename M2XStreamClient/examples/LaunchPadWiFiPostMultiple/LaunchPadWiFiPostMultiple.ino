@@ -2,6 +2,7 @@
 #include "SPI.h"
 #include "WiFi.h"
 
+#define ENERGIA_PLATFORM
 #include "M2XStreamClient.h"
 
 char ssid[] = "<ssid>"; //  your network SSID (name)

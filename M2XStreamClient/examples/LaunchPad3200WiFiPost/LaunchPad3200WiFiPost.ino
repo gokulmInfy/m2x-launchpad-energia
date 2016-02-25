@@ -4,6 +4,7 @@
 #include <BMA222.h>
 #include "SPI.h"
 
+#define ENERGIA_PLATFORM
 #include "M2XStreamClient.h"
 
 char ssid[] = "<ssid>"; //  your network SSID (name)
