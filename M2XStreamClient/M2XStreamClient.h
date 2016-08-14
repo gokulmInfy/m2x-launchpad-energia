@@ -1863,6 +1863,7 @@ int M2XStreamClient::readCommand(m2x_command_read_callback callback,
             state |= M2X_COMMAND_GOT_NAME;
           }
         }
+	field = field->next;
       }
     }
 
